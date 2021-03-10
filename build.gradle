@@ -1,0 +1,29 @@
+buildscript {
+  repositories {
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+  dependencies {
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.15'
+    classpath "de.undercouch:gradle-download-task:4.1.1"
+  }
+}
+
+group 'us.lesserwhirls'
+version '1.0-SNAPSHOT'
+
+ext {
+
+  depVersion = [
+      grpcWeb: '1.2.1'
+  ]
+  dep = [
+    protoc:  'com.google.protobuf:protoc:3.12.4'
+  ]
+}
+
+tasks.named('wrapper') {
+  distributionType = Wrapper.DistributionType.ALL
+  gradleVersion = '6.8.3'
+}

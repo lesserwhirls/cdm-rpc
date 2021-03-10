@@ -1,0 +1,3 @@
+rootProject.name = 'cdm-rpc'
+include 'grpc-web'
+include 'grpc-python'

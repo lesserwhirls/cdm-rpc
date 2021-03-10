@@ -1,0 +1,70 @@
+apply plugin: 'java'
+apply plugin: 'com.google.protobuf'
+apply plugin: 'de.undercouch.download'
+
+sourceSets {
+  main {
+    proto {
+      srcDir "${rootDir}/proto"
+    }
+  }
+}
+
+String getGrpcWebUrl() {
+  OperatingSystem os = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem
+  def baseLocation = 'https://packages.grpc.io/archive/2020/07/5cc76cf450a95fc62fd42cfcac3dd538672dc704-07d60e69-eb61-4681-b894-10df671bf8a7/protoc'
+  def flavor = ''
+  if (os.isLinux()) {
+    flavor = 'linux_x64'
+  } else if (os.isMacOsX()) {
+    flavor = 'macos_x64'
+  } else if (os.isWindows()) {
+    flavor = 'windows_x64'
+  }
+  "${baseLocation}/grpc-protoc_${flavor}-1.32.0-dev.zip"
+}
+
+task downloadGrpcCompiler(type: Download) {
+  src getGrpcWebUrl()
+  dest "${buildDir}/grpc-plugins-native.zip"
+  overwrite false
+}
+
+task unpackGrpcCompiler(type: Copy) {
+  dependsOn downloadGrpcCompiler
+  from zipTree("${buildDir}/grpc-plugins-native.zip")
+  into "${buildDir}/plugins/"
+}
+
+protobuf {
+  generatedFilesBaseDir = "$projectDir/src"
+  protoc {
+    path = "${buildDir}/plugins/protoc.exe"
+  }
+  plugins {
+    grpc_python {
+      path = "${buildDir}/plugins/grpc_python_plugin.exe"
+    }
+  }
+  generateProtoTasks {
+    all().each {task ->
+      task.dependsOn unpackGrpcCompiler
+      task.builtins {
+        python {
+          outputSubDir = 'python/generated'
+        }
+        // If you wish to avoid generating Java files:
+        remove java
+      }
+      task.plugins {
+        grpc_python {
+          outputSubDir = 'python/generated/grpc'
+        }
+      }
+    }
+  }
+}
+
+clean {
+  delete files('src/main/python/generated')
+}

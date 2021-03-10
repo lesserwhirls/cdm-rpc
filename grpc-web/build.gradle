@@ -1,0 +1,73 @@
+apply plugin: 'java'
+apply plugin: 'com.google.protobuf'
+apply plugin: 'de.undercouch.download'
+
+repositories {
+  mavenCentral()
+}
+
+sourceSets {
+  main {
+    proto {
+      // In addition to the default 'src/main/proto'
+      srcDir "${rootDir}/proto"
+    }
+  }
+}
+
+String getGrpcWebUrl() {
+  OperatingSystem os = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem
+  def baseLocation = "https://github.com/grpc/grpc-web/releases/download"
+  def flavor = ""
+  if (os.isLinux()) {
+    flavor = "linux-x86_64"
+  } else if (os.isMacOsX()) {
+    flavor = "darwin-x86_64"
+  } else if (os.isWindows()) {
+    flavor = "windows-x86_64.exe"
+  }
+
+  "${baseLocation}/${depVersion.grpcWeb}/protoc-gen-grpc-web-${depVersion.grpcWeb}-${flavor}"
+}
+
+task downloadGrpcWebPlugin(type: Download) {
+  src getGrpcWebUrl()
+  dest "${buildDir}/grpc-web-native"
+  overwrite false
+}
+
+protobuf {
+  generatedFilesBaseDir = "$projectDir/src"
+  protoc {
+    artifact = "${dep.protoc}"
+  }
+  plugins {
+    web {
+      path = "${buildDir}/grpc-web-native"
+    }
+  }
+  generateProtoTasks {
+    all().each {task ->
+      task.dependsOn downloadGrpcWebPlugin
+      task.builtins {
+        js {
+          outputSubDir = 'js/generated'
+          option "import_style=commonjs"
+        }
+        // If you wish to avoid generating Java files:
+        remove java
+      }
+      task.plugins {
+        web {
+          outputSubDir = 'js/generated/grpc'
+          option "import_style=commonjs"
+          option "mode=grpcwebtext"
+        }
+      }
+    }
+  }
+}
+
+clean {
+  delete files('src/main/js/generated')
+}
