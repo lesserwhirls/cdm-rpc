@@ -17,14 +17,17 @@ sourceSets {
 
 String getGrpcWebUrl() {
   OperatingSystem os = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem
-  def baseLocation = "https://github.com/grpc/grpc-web/releases/download"
-  def flavor = ""
+  def baseLocation = 'https://github.com/grpc/grpc-web/releases/download'
+  def flavor = ''
   if (os.isLinux()) {
-    flavor = "linux-x86_64"
+    flavor = 'linux-x86_64'
   } else if (os.isMacOsX()) {
-    flavor = "darwin-x86_64"
+    flavor = 'darwin-x86_64'
   } else if (os.isWindows()) {
-    flavor = "windows-x86_64.exe"
+    flavor = 'windows-x86_64.exe'
+  } else {
+    String msg = 'Native grpc-web plugin for protoc is not available for %s.'
+    throw new GradleScriptException(String.format(msg, os.getName()), null)
   }
 
   "${baseLocation}/${depVersion.grpcWeb}/protoc-gen-grpc-web-${depVersion.grpcWeb}-${flavor}"
@@ -34,6 +37,10 @@ task downloadGrpcWebPlugin(type: Download) {
   src getGrpcWebUrl()
   dest "${buildDir}/grpc-web-native"
   overwrite false
+  doLast{
+    File file = new File("${buildDir}/grpc-web-native")
+    file.setExecutable(true, true)
+  }
 }
 
 protobuf {
@@ -52,16 +59,16 @@ protobuf {
       task.builtins {
         js {
           outputSubDir = 'js/generated'
-          option "import_style=commonjs"
+          option 'import_style=commonjs'
         }
         // If you wish to avoid generating Java files:
         remove java
       }
       task.plugins {
         web {
-          outputSubDir = 'js/generated/grpc'
-          option "import_style=commonjs"
-          option "mode=grpcwebtext"
+          outputSubDir = 'js/generated'
+          option 'import_style=commonjs'
+          option 'mode=grpcwebtext'
         }
       }
     }
