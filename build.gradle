@@ -10,9 +10,6 @@ buildscript {
   }
 }
 
-group 'us.lesserwhirls'
-version '1.0-SNAPSHOT'
-
 ext {
 
   depVersion = [

@@ -14,36 +14,79 @@ String getGrpcWebUrl() {
   OperatingSystem os = org.gradle.nativeplatform.platform.internal.DefaultNativePlatform.currentOperatingSystem
   def baseLocation = 'https://packages.grpc.io/archive/2020/07/5cc76cf450a95fc62fd42cfcac3dd538672dc704-07d60e69-eb61-4681-b894-10df671bf8a7/protoc'
   def flavor = ''
-  if (os.isLinux()) {
-    flavor = 'linux_x64'
-  } else if (os.isMacOsX()) {
-    flavor = 'macos_x64'
-  } else if (os.isWindows()) {
+  def suffix = ''
+  if (os.isWindows()) {
     flavor = 'windows_x64'
+    suffix = '.zip'
+  } else {
+    suffix = '.tar.gz'
+    if (os.isLinux()) {
+      flavor = 'linux_x64'
+    } else if (os.isMacOsX()) {
+      flavor = 'macos_x64'
+    } else {
+      String msg = 'Native grpc-python plugin for protoc is not available for %s.'
+      throw new GradleScriptException(String.format(msg, os.getName()), null)
+    }
   }
-  "${baseLocation}/grpc-protoc_${flavor}-1.32.0-dev.zip"
+
+  "${baseLocation}/grpc-protoc_${flavor}-1.32.0-dev${suffix}"
 }
 
-task downloadGrpcCompiler(type: Download) {
+String getDestName() {
+  def srcUrl = getGrpcWebUrl()
+  String baseName = "${buildDir}/grpc-plugins-native"
+  srcUrl.endsWith('.zip') ? "${baseName}.zip" : "${baseName}.tar.gz"
+}
+
+def downloadCompiler = tasks.create('downloadGrpcCompiler', Download) {
   src getGrpcWebUrl()
-  dest "${buildDir}/grpc-plugins-native.zip"
+  dest getDestName()
   overwrite false
 }
 
-task unpackGrpcCompiler(type: Copy) {
-  dependsOn downloadGrpcCompiler
+def unpackZip = tasks.create('unpackGrpcCompilerZip', Copy) {
+  onlyIf {
+    file("${buildDir}/grpc-plugins-native.zip").exists()
+  }
   from zipTree("${buildDir}/grpc-plugins-native.zip")
   into "${buildDir}/plugins/"
+  rename { String fileName ->
+    fileName.replace('.exe', '')
+  }
+  dependsOn downloadGrpcCompiler
+}
+
+def unpackTarGz = tasks.create('unpackGrpcCompilerTarGz', Copy) {
+  onlyIf {
+    file("${buildDir}/grpc-plugins-native.tar.gz").exists()
+  }
+  from tarTree(resources.gzip("${buildDir}/grpc-plugins-native.tar.gz"))
+  into "${buildDir}/plugins/"
+  rename { String fileName ->
+    fileName.replace('.exe', '')
+  }
+  dependsOn downloadGrpcCompiler
+}
+
+def unpackGrpcCompiler = tasks.create('unpackGrpcCompiler', DefaultTask) {
+  dependsOn unpackTarGz
+  dependsOn unpackZip
+  doLast {
+    fileTree("${buildDir}/plugins/").forEach { f ->
+      f.setExecutable(true, true)
+    }
+  }
 }
 
 protobuf {
   generatedFilesBaseDir = "$projectDir/src"
   protoc {
-    path = "${buildDir}/plugins/protoc.exe"
+    path = "${buildDir}/plugins/protoc"
   }
   plugins {
     grpc_python {
-      path = "${buildDir}/plugins/grpc_python_plugin.exe"
+      path = "${buildDir}/plugins/grpc_python_plugin"
     }
   }
   generateProtoTasks {
@@ -58,7 +101,7 @@ protobuf {
       }
       task.plugins {
         grpc_python {
-          outputSubDir = 'python/generated/grpc'
+          outputSubDir = 'python/generated'
         }
       }
     }
