@@ -40,7 +40,7 @@ For JavaScript development, a proxy server is needed to handle the _HTTP/1_ / _H
 We use the proxy server [envoy](https://www.envoyproxy.io/).
 It is available at `localhost` on port _16110_, which is the host and port that should be used to interact with the `cdmr` server.
 
-<a id="tear_down" />
+<a id="tear-down" />
 
 ## Tearing-down the local server
 
