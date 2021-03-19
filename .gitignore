@@ -5,8 +5,9 @@ build/
 .gradle/
 
 # ignore generated files
-grpc-python/src/main/python/generated/
-grpc-web/src/main/js/
+*_pb2.py
+*_pb2_grpc.py
+*_pb.js
 
 # Ignore unwanted IntelliJ IDEA project files
 /intelliJ/

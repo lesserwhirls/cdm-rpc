@@ -7,8 +7,11 @@ buildscript {
   dependencies {
     classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.15'
     classpath "de.undercouch:gradle-download-task:4.1.1"
+    classpath 'com.avast.gradle:gradle-docker-compose-plugin:0.14.1'
   }
 }
+
+apply plugin: 'base'
 
 ext {
 

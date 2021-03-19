@@ -58,7 +58,7 @@ protobuf {
       task.dependsOn downloadGrpcWebPlugin
       task.builtins {
         js {
-          outputSubDir = 'js/generated'
+          outputSubDir = 'js'
           option 'import_style=commonjs'
         }
         // If you wish to avoid generating Java files:
@@ -66,7 +66,7 @@ protobuf {
       }
       task.plugins {
         web {
-          outputSubDir = 'js/generated'
+          outputSubDir = 'js'
           option 'import_style=commonjs'
           option 'mode=grpcwebtext'
         }
@@ -76,5 +76,9 @@ protobuf {
 }
 
 clean {
-  delete files('src/main/js/generated')
+  fileTree("src/main/js/").forEach { f ->
+    if (f.name.endsWith('_pb.js')) {
+      f.delete()
+    }
+  }
 }
