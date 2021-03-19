@@ -1,0 +1,20 @@
+apply plugin: 'application'
+
+repositories {
+  mavenCentral()
+  maven {
+    url "https://artifacts.unidata.ucar.edu/repository/unidata-all/"
+  }
+}
+
+apply plugin: 'docker-compose'
+
+dependencies {
+  compile 'edu.ucar:cdmr:6.0.0-SNAPSHOT'
+}
+
+application {
+  mainClass = 'ucar.cdmr.server.CdmrServer'
+}
+
+composeUp.dependsOn installDist
