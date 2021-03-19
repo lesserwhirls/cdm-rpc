@@ -94,20 +94,24 @@ protobuf {
       task.dependsOn unpackGrpcCompiler
       task.builtins {
         python {
-          outputSubDir = 'python/generated'
+          outputSubDir = 'python'
         }
         // If you wish to avoid generating Java files:
         remove java
       }
       task.plugins {
         grpc_python {
-          outputSubDir = 'python/generated'
+          outputSubDir = 'python'
         }
       }
     }
   }
 }
 
-clean {
-  delete files('src/main/python/generated')
+def cleanGeneratedTask = tasks.register('cleanGenrated', Delete) {
+  delete fileTree("src/main/python/").filter { f ->
+    f.name.endsWith('pb2.py') || f.name.endsWith('pb2_grpc.py')
+  }
 }
+
+clean.dependsOn cleanGeneratedTask
