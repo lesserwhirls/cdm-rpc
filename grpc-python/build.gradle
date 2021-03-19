@@ -108,10 +108,10 @@ protobuf {
   }
 }
 
-clean {
-  fileTree("src/main/python/").forEach { f ->
-    if (f.name.endsWith('pb2.py') || f.name.endsWith('pb2_grpc.py')) {
-      f.delete()
-    }
+def cleanGeneratedTask = tasks.register('cleanGenrated', Delete) {
+  delete fileTree("src/main/python/").filter { f ->
+    f.name.endsWith('pb2.py') || f.name.endsWith('pb2_grpc.py')
   }
 }
+
+clean.dependsOn cleanGeneratedTask
