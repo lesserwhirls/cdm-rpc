@@ -34,3 +34,5 @@ Thumbs.db
 __pycache__/
 *.py[cod]
 
+# node modules
+node_modules/
