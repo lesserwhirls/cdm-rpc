@@ -36,3 +36,6 @@ __pycache__/
 
 # node modules
 node_modules/
+
+# webpack generated code, except for index.html, which has been explicitly added to git.
+grpc-web/src/main/js/dist/
