@@ -9,7 +9,7 @@ These instructions assume that Conda or Miniconda 3 is available on your system.
 From the top level of the repository, execute the following commands to setup and activate the python environment:
 
 ~~~shell
-conda env create -f ./environment.yml
+conda env create -f ./grpc-python/environment.yml
 conda activate cdm-grpc
 ~~~
 
