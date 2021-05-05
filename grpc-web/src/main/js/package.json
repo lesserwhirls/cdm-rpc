@@ -2,11 +2,23 @@
   "name": "grpc-web-commonjs-example",
   "dependencies": {
     "google-protobuf": "^3.12.4",
-    "grpc-web": "^1.2.1"
+    "grpc-web": "^1.2.1",
+    "ol": "^6.5.0"
   },
   "devDependencies": {
     "browserify": "^16.2.2",
+    "parcel-bundler": "^1.12.5",
     "webpack": "^4.16.5",
     "webpack-cli": "^3.1.0"
-  }
+  },
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel index.html",
+    "build": "parcel build --public-url . index.html"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
