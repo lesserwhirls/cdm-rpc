@@ -34,8 +34,8 @@ Thumbs.db
 __pycache__/
 *.py[cod]
 
-# node modules
+# node modules / generated files
+.cache/
+dist/
 node_modules/
-
-# webpack generated code, except for index.html, which has been explicitly added to git.
-grpc-web/src/main/js/dist/
+package-lock.json

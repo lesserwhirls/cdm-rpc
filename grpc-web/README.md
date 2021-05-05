@@ -14,37 +14,43 @@ npm install
 
 This will install the dependencies in the `grpc-web/src/main/js/node_modules` directory.
 
-
 ## Running the Javascript example
 
 Make sure a local server is running for development.
 See [cdm-grpc-local/README.md](../cdm-grpc-local/README.md#spin-up) for details.
 This also ensures that the gRPC and protobuf managed source code has been generated.
-Next, package the example code by using npx webpack in the `grpc-web/src/main/js` directory:
+
+Next, use npm to build the bundle.
+The command we will use is `npm run build`, and should be executed in the `grpc-web/src/main/js` directory.
+You should see something similar to the following in your terminal:
 
 ~~~shell
-npx webpack client.js
+> npm run build
+
+> grpc-web-commonjs-example@1.0.0 build C:\Users\Sarms\dev\unidata\repos\thredds\cdm-rpc\grpc-web\src\main\js
+> parcel build --public-url . index.html                                                                                                                                                                                                        √  Built in 5.68s.
+                                                                                                                        dist\js.b6d8ade2.js.map        ‼  1.99 MB     82ms
+dist\client.96fb2162.js.map     943.47 KB     68ms
+dist\js.b6d8ade2.js             554.61 KB    346ms
+dist\client.96fb2162.js         395.24 KB    3.21s
+dist\index.html                     251 B    1.81s
 ~~~
 
-This will create a `grpc-web/src/main/js/dist` directory with the usable client javascript code.
-Next, move into the `grpc-web/src/main/js/dist` directory and start a local webserver using python:
+After the build, you can use the command `npm start` to run the demo application.
+You should see the following in output in the terminal:
 
-~~~sh
-python -m http.server
+~~~shell
+> npm start
+
+> grpc-web-commonjs-example@1.0.0 start C:\Users\Sarms\dev\unidata\repos\thredds\cdm-rpc\grpc-web\src\main\js
+> parcel index.html
+
+Server running at http://localhost:1234
+√  Built in 6.81s.
 ~~~
 
-(note, you might need to use `python3` instead of `python`)
-You should see the following output:
-
-~~~sh
-> python -m http.server
-
-Serving HTTP on :: port 8000 (http://[::]:8000/) ...
-~~~
-
-Finally, open a web browser and navigate to the example using `localhost` and the port number indicated by the output from the above python command.
-For example, if the output was exactly as above, you would use `localhost:8000` in the url bar.
-The page will be blank, and you might feel sad...but fear not!
+Finally, open a web browser and navigate to the example using `localhost` and the port number indicated by the output from the above npm command.
+For example, if the output was exactly as above, you would use `localhost:1234` in the url bar.
 Open the developer console of your browser (push `F12` and make sure the `console` tab is selected), and you should see the following output in the console:
 
 ~~~
