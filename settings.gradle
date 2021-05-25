@@ -1,4 +1,4 @@
 rootProject.name = 'cdm-rpc'
 include 'grpc-web'
 include 'grpc-python'
-include 'cdm-grpc-local'
+include 'gcdm-local'

@@ -1,14 +1,13 @@
-"""CDM gRPC"""
+"""gCDM: CDM access via gRPC"""
 
 import grpc
 
-from cdmrServer_pb2_grpc import CdmRemoteStub
-from cdmrNetcdf_pb2 import HeaderRequest
-from cdmrNetcdf_pb2 import DataType
+from gcdm_server_pb2_grpc import GcdmStub
+from gcdm_netcdf_pb2 import DataType, HeaderRequest
 
 channel = grpc.insecure_channel('localhost:16111')
-client = CdmRemoteStub(channel)
-# location is with respect to inside cdmr container
+client = GcdmStub(channel)
+# location is with respect to inside gcdm container
 request_header = HeaderRequest(location='/data/grid/20210317090000-JPL-L4_GHRSST-SSTfnd-MUR25-GLOB-v02.0-fv04.2.nc')
 
 response_header = client.GetNetcdfHeader(request_header)
@@ -39,7 +38,7 @@ variables = rootGroup.vars
 time_variable = ''
 print('Variables (data type, name):')
 for var in variables:
-    print('    {} {}'.format(DataType.Name(var.dataType), var.name))
+    print('    {} {}'.format(DataType.Name(var.data_type), var.name))
     if var.name.lower() == 'time':
         time_variable = var
 print()
@@ -52,6 +51,6 @@ for attr in time_attributes:
 
 time_data = time_variable.data
 print('        data:')
-print('            shape: {}'.format(time_data.shape))
+print('            shape: {}'.format(time_data.shapes))
 print('            values: {}'.format(time_data.idata))
 print()

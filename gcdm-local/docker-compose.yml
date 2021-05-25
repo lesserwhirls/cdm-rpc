@@ -1,13 +1,13 @@
 version: '3'
 services:
-  cdmrpc:
+  gcdm:
     image: adoptopenjdk:11-jre-hotspot
     volumes:
-      - ./build/install/cdm-grpc-local:/cdmr
+      - ./build/install/gcdm-local:/gcdm
       - ./sample_data:/data
     ports:
       - "16111:16111"
-    command: /cdmr/bin/cdm-grpc-local
+    command: /gcdm/bin/gcdm-local
   envoy:
     image: envoyproxy/envoy:v1.17-latest
     ports:
@@ -16,4 +16,4 @@ services:
     volumes:
       - ./envoy.yaml:/etc/envoy/envoy.yaml
     links:
-      - "cdmrpc"
+      - "gcdm"

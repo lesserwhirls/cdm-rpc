@@ -10,11 +10,12 @@ repositories {
 apply plugin: 'docker-compose'
 
 dependencies {
-  compile 'edu.ucar:cdmr:6.0.0-SNAPSHOT'
+  compile 'edu.ucar:gcdm:6.0.0-beta1'
+  runtime 'org.slf4j:slf4j-jdk14:1.7.28'
 }
 
 application {
-  mainClass = 'ucar.cdmr.server.CdmrServer'
+  mainClass = 'ucar.gcdm.server.GcdmServer'
 }
 
 composeUp.dependsOn installDist
