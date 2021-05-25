@@ -1,6 +1,6 @@
 # Javascript client
 
-This gradle submodule holds example javascript code for talking with the gRPC based `cdmr` server.
+This gradle submodule holds example javascript code for talking with the gRPC based `gCDM` server.
 The following instructions will assist you in running the example script.
 
 ## Environment setup
@@ -17,7 +17,7 @@ This will install the dependencies in the `grpc-web/src/main/js/node_modules` di
 ## Running the Javascript example
 
 Make sure a local server is running for development.
-See [cdm-grpc-local/README.md](../cdm-grpc-local/README.md#spin-up) for details.
+See [gcdm-local/README.md](../gcdm-local/README.md#spin-up) for details.
 This also ensures that the gRPC and protobuf managed source code has been generated.
 
 Next, use npm to build the bundle.
@@ -94,4 +94,4 @@ Variables (data type, name):
 ~~~
 
 When you are finished, be sure to tear-down the local server.
-See [cdm-grpc-local/README.md](../cdm-grpc-local/README.md#tear-down) for details.
+See [gcdm/README.md](../gcdm-local/README.md#tear-down) for details.

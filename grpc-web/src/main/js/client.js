@@ -1,14 +1,14 @@
-const {HeaderRequest, DataType} = require('./cdmrNetcdf_pb.js');
-const {CdmRemoteClient} = require('./cdmrServer_grpc_web_pb.js');
-const {GridDatasetRequest, GridDataRequest} = require('./cdmrGrid_pb.js');
+const {HeaderRequest, DataType} = require('./gcdm_netcdf_pb');
+const {GcdmClient} = require('./gcdm_server_grpc_web_pb');
+const {GridDatasetRequest, GridDataRequest} = require('./gcdm_grid_pb');
 
-var cdmrService = new CdmRemoteClient('http://localhost:16110');
+var gcdmService = new GcdmClient('http://localhost:16110');
 var datasetLocation = '/data/grid/20210317090000-JPL-L4_GHRSST-SSTfnd-MUR25-GLOB-v02.0-fv04.2.nc'
 
 function ncdumpIsh() {
-    var headerRequest = new HeaderRequest();
+    let headerRequest = new HeaderRequest();
     headerRequest.setLocation(datasetLocation)
-    cdmrService.getNetcdfHeader(headerRequest, {}, function (err, response) {
+    gcdmService.getNetcdfHeader(headerRequest, {}, function (err, response) {
         console.log('response header:')
         console.log('    error: ' + response.getError())
         console.log('    version: ' + response.getVersion())
@@ -39,7 +39,7 @@ function ncdumpIsh() {
         console.log('Variables (data type, name):')
         variables.forEach(function (variable) {
             var varName = variable.getName()
-            console.log('    ' + Object.keys(DataType)[variable.getDatatype()] + ' ' + varName)
+            console.log('    ' + Object.keys(DataType)[variable.getDataType()] + ' ' + varName)
             if (varName.toLowerCase() === 'time') {
                 timeVariable = variable
             }
@@ -54,7 +54,7 @@ function ncdumpIsh() {
         });
         var timeData = timeVariable.getData()
         console.log('        data:')
-        console.log('            shape: ' + timeData.getShapeList())
+        console.log('            shape: ' + timeData.getShapesList())
         console.log('            values: ' + timeData.getIdataList())
         console.log('')
     });
@@ -63,7 +63,7 @@ function ncdumpIsh() {
 function listGrids() {
     var gridDatasetRequest = new GridDatasetRequest();
     gridDatasetRequest.setLocation(datasetLocation)
-    cdmrService.getGridDataset(gridDatasetRequest, {}, function (err, response) {
+    gcdmService.getGridDataset(gridDatasetRequest, {}, function (err, response) {
         let gridDataset = response.getDataset();
         gridDataset.getGridsList().forEach(function(grid) {
             console.log(grid.getName());
@@ -89,15 +89,20 @@ function subset(gridName, lowerLeftLon, lowerLeftLat, lonWidth, latWidth) {
     gridDataRequest.subsetMap = subset;
 
     // make the request and obtain the return stream
-    var dataStream = cdmrService.getGridData(gridDataRequest, {});
+    var dataStream = gcdmService.getGridData(gridDataRequest, {});
 
     // setup the handlers for the stream
     dataStream.on('data', function(response) {
         var gridReferencedArray = response.getData();
-        console.log(gridReferencedArray.getGridname());
+        console.log(gridReferencedArray.getGridName());
         var dataArray = gridReferencedArray.getData();
-        var dataValues = dataArray.getDdataList();
         console.log(gridReferencedArray)
+        var dataValues = dataArray.getDdataList();
+        console.log(dataValues)
+        var csSubset = gridReferencedArray.getCsSubset();
+        console.log(csSubset);
+        var projection = csSubset.getProjection();
+        console.log(projection);
     });
 
     dataStream.on('status', function(status) {

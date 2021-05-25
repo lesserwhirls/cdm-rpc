@@ -1,6 +1,6 @@
 # Python client
 
-This gradle submodule holds example code for talking with the gRPC based `cdmr` server.
+This gradle submodule holds example code for talking with the gRPC based `gCDM` server.
 The following instructions will assist you in running the example script.
 
 ## Python environment setup
@@ -19,11 +19,11 @@ That's it!
 
 First, make sure you are in the `cdm-grpc` Conda environment.
 Next, make sure a local server is running for development.
-See [cdm-grpc-local/README.md](../cdm-grpc-local/README.md#spin-up) for details.
+See [gcdm-local/README.md](../gcdm-local/README.md#spin-up) for details.
 Finally, from the top level of the repository, execute the example python script:
 
 ~~~sh
-python .\grpc-python\src\main\python\cdmr_netcdf.py
+python .\grpc-python\src\main\python\gcdm_netcdf.py
 ~~~
 
 You should see the following output:
@@ -69,4 +69,4 @@ Variables (data type, name):
 ~~~
 
 When you are finished, be sure to tear-down the local server.
-See [cdm-grpc-local/README.md](../cdm-grpc-local/README.md#tear-down) for details.
+See [gcdm-local/README.md](../gcdm-local/README.md#tear-down) for details.

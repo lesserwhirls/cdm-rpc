@@ -23,12 +23,12 @@ static_resources:
                       routes:
                         - match: { prefix: "/" }
                           route:
-                            cluster: cdm_grpc_service
+                            cluster: gcdm_service
                             timeout: 0s
                             max_stream_duration:
                         - match: { prefix: "/" }
                           route:
-                            cluster: cdm_grpc_service
+                            cluster: gcdm_service
                             timeout: 0s
                             max_stream_duration:
                               grpc_timeout_header_max: 0s
@@ -44,7 +44,7 @@ static_resources:
                   - name: envoy.filters.http.cors
                   - name: envoy.filters.http.router
   clusters:
-    - name: cdm_grpc_service
+    - name: gcdm_service
       connect_timeout: 0.25s
       type: logical_dns
       http2_protocol_options: {}
