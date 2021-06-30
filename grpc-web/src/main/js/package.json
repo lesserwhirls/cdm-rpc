@@ -1,6 +1,7 @@
 {
   "name": "grpc-web-commonjs-example",
   "dependencies": {
+    "babel-polyfill": "^6.26.0",
     "google-protobuf": "^3.17.1",
     "grpc-web": "^1.2.1",
     "ol": "^6.5.0"
