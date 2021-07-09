@@ -18,4 +18,5 @@ application {
   mainClass = 'ucar.gcdm.server.GcdmServer'
 }
 
+project.build.dependsOn installDist
 composeUp.dependsOn installDist

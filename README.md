@@ -34,3 +34,20 @@ Be sure that you do not name your development files in a way that uses those end
 
 In order to develop code that speaks to a `gCDM` server, you will need to spin-up a local server for development.
 Please see [gcdm-local/README.md](gcdm-local/README.md) for more information on how to use gradle and docker to manage this without (hopefully) much heartache.
+
+### TL;DR
+If you just want to get up and running quickly, use
+
+~~~bash
+./gradlew :gcdm-local:composeUp
+~~~
+
+At this point, you should be ready to interact with the server using the code in either the [grpc-python]((gcdm-python/README.md)) or [grpc-web]((gcdm-web/README.md)) subprojects.
+When finished, be sure to run:
+
+~~~bash
+./gradlew :gcdm-local:composeDown
+~~~
+
+to tear down the local gCDM server.
+
